@@ -31,8 +31,15 @@ class Category:
 			return False
 		return True
 
+	def format_category_name(self, ):
+		cat_len = len(self.category)
+		num_stars = 30 - cat_len
+		stars_around_name =  num_stars / 2 * '*'
+		return stars_around_name + self.category + stars_around_name
+
 	def __repr__(self):
-		return "{}".format(self.ledger)
+		category_name = self.format_category_name()
+		return category_name
 #def create_spend_chart(categories):
 
 
@@ -47,3 +54,4 @@ if __name__ == '__main__':
 	food.withdraw(100, 'bought apples')
 	food.transfer(200, clothing)
 	print repr(food)
+	print repr(clothing)
