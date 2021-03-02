@@ -36,10 +36,18 @@ class Category:
 		num_stars = 30 - cat_len
 		stars_around_name =  num_stars / 2 * '*'
 		return stars_around_name + self.category + stars_around_name
+	
+	def format_description(self, ):
+		descriptions = []
+		for desc in self.ledger:
+			desc_spaces_len = 23 - len(desc['description'])	
+			descriptions.append(desc['description'] + desc_spaces_len * ' ' + str(desc['amount']) + '.00\n')
+		return descriptions
 
 	def __repr__(self):
 		category_name = self.format_category_name()
-		return category_name
+		description = self.format_description()
+		return category_name +  '\n' + ''.join(description)
 #def create_spend_chart(categories):
 
 
