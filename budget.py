@@ -69,20 +69,49 @@ class Category:
 		return category_name +  '\n' + '\n'.join(description) + '\n' + total
 
 def create_spend_chart(categories):
-	withdraws = []
-	cat_names = []
-	for category in categories:
-		split = str(category).split()
-		for s in split:
-			if '*' in s:
-				cat_names.append(s)
-			try:
-				if float(s) < 0:
-					withdraws.append(float(s))
-			except ValueError:
-				pass
-	print withdraws
-	print cat_names
+	def get_cats(cat):
+		cat_spendings = []
+		for amnt in cat.ledger:
+			if amnt['amount'] < 0:
+				cat_spendings.append(amnt['amount'])
+		return cat.category, abs(round(sum(cat_spendings)))
+
+	# group category name and withdraws
+	cats = map(get_cats, categories)
+
+	# add up all spendings and divide each category spending by total spendings
+	total_spending = []
+	for s in cats:
+		total_spending.append(s[1])
+
+	# get percentage list -- (category, total money spent for this category)
+	def get_percent(p):
+		percent = int(round(p[1] / sum(total_spending) * 100)) / 10
+		return p[0], percent
+
+	# (catgory name, percentage spent of total)
+	cat_percent = map(get_percent, cats)
+
+	def format_y_axis(num):
+		return str(num) + '|\n'
+
+	y_axis_nums = map(format_y_axis, range(100, -10, -10))
+
+	def format_vertical_name_percent(n):
+		o_list = n[1] * 'o \n'
+		c_list = ''
+		for l in n[0]:
+			c_list += l + '\n'
+		return o_list + '-\n'+ c_list
+	vertical_cat = map(format_vertical_name_percent, cat_percent)
+
+	for x, i in enumerate(y_axis_nums):
+		try:
+			print i, vertical_cat[x]
+		except IndexError:
+			pass
+
+
 if __name__ == '__main__':
 	food = Category('Food')
 	clothing = Category('Clothing')
